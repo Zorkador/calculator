@@ -13,52 +13,51 @@ export default function App() {
   const [display, setDisplay] = useState('')
   const [preview, setPreview] = useState('')
   const [operation, setOperation] = useState('')
-  var lastOperation;
+
+
+  /*
+  e  -> &&
+  ou -> ||
+
+  a=2, a=3, a=1
+
+  if(a==1 && a==2){         
+    alert('imposible')
+  }else{
+    alert('posible')
+  }
+
+  if(a==1 || a==3){        f | v = 
+    alert(o)
+  }else{
+    alert(x)
+  }
+  */
+
 
   useEffect(() => {
 
   }, [display, preview, operation]);
+  /*  3 casos problemáticos
+  #1 - quando inicia o programa e clica em algum botao de calculo a operação sobe
+  #2 - quanto o display é vazio e clica em algum botao de calculo a operação é executada - resolvido
+  #3 - não lembro
+  */
+  function handleCalculation(buttonOperation) {
 
-  function handleMultiplication() {
-    const lastPreview = preview, lastDisplay = display;
-    setPreview(preview == '' ? display : parseFloat(preview) * parseFloat(display))
-    setDisplay('')
-    console.log(operation)
-    console.log('Display: ' + display);
-    console.log('Preview: ' + preview);
+    if (display == '' && preview != '') {
+      setOperation(buttonOperation)
+
+    } else if (display == '' && preview == '') {
+      alert('Digite algum número')
+    } else {
+      setOperation ()
+      setPreview (calculation())
+    }
   }
-  function handleSubtraction() {
 
-    setPreview(preview == '' ? display : parseFloat(preview) - parseFloat(display))
-    setDisplay('')
-
-    console.log(operation)
-    console.log('Display: ' + display);
-    console.log('Preview: ' + preview);
-  }
-  function handleDivision() {
-
-    setPreview(preview == '' ? display : parseFloat(preview) / parseFloat(display))
-    setDisplay('')
-
-    console.log(operation)
-    console.log('Display: ' + display);
-    console.log('Preview: ' + preview);
-  }
-  function handleSum() {
-
-    setPreview(preview == '' ? display :(parseFloat(preview) + parseFloat(display)).toString())
-    setDisplay('')
-
-    console.log(operation)
-    console.log('Display: ' + display);
-    console.log('Preview: ' + preview);
-  }
   function handlePercentage() {
     setDisplay(((parseFloat(preview) * parseFloat(display)) / 100).toString())
-
-
-
   }
 
   return (
@@ -76,7 +75,6 @@ export default function App() {
           value={display}
           onChange={e => setDisplay(e.target.value)}
           style={styles.displayFont}
-          placeholder='0'
           placeholderTextColor="#000" />
 
         <Text style={{ width: 275, marginTop: -83, textAlign: 'right' }}>
@@ -102,13 +100,13 @@ export default function App() {
           </View>
         </TouchableHighlight>
 
-        <TouchableHighlight onPress={() => { setOperation('/'), handleDivision() }}>
+        <TouchableHighlight onPress={() => { handleCalculation('/') }}>
           <View style={styles.button} >
             <Text style={styles.fontsize}>/</Text>
           </View>
         </TouchableHighlight>
 
-        <TouchableHighlight onPress={() => { setOperation('*'), handleMultiplication() }}>
+        <TouchableHighlight onPress={() => { handleCalculation('X') }}>
           <View style={styles.button} >
             <Text style={styles.fontsize}>X</Text>
           </View>
@@ -134,7 +132,7 @@ export default function App() {
           </View>
         </TouchableHighlight>
 
-        <TouchableHighlight onPress={() => { setOperation('-'), handleSubtraction() }}>
+        <TouchableHighlight onPress={() => { handleCalculation('-') }}>
           <View style={styles.button} >
             <Text style={styles.fontsize}>-</Text>
           </View>
@@ -162,7 +160,7 @@ export default function App() {
           </View>
         </TouchableHighlight>
 
-        <TouchableHighlight onPress={() => { lastOperation = '+', setOperation('+'), handleSum() }}>
+        <TouchableHighlight onPress={() => { handleCalculation('+') }}>
           <View style={styles.button} >
             <Text style={styles.fontsize}>+</Text>
           </View>
@@ -232,26 +230,27 @@ export default function App() {
     setOperation('')
     setPreview('')
   }
-  function equal() {
-
+  function calculation() {
+    var value
     switch (operation) {
       case '+':
-        setDisplay((parseFloat(preview) + parseFloat(display)).toString())
+        value = parseFloat(preview) + parseFloat(display)
         break
       case '-':
-        setDisplay((parseFloat(preview) - parseFloat(display)).toString())
+        value = parseFloat(preview) - parseFloat(display)
         break
       case '*':
-        setDisplay((parseFloat(preview) * parseFloat(display)).toString())
+        value = parseFloat(preview) * parseFloat(display)
         break
       case '/':
-        setDisplay((parseFloat(preview) / parseFloat(display)).toString())
+        value = parseFloat(preview) / parseFloat(display)
         break
       default:
         alert("Invalid Operation")
+        value = -1
         break
     }
-    eraseOperationPreview()
+    return value
 
   }
 }
