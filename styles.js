@@ -31,6 +31,14 @@ export default StyleSheet.create({
     borderWidth:2,
     borderColor:'black',
   },
+  history: {
+    backgroundColor: 'grey',
+    paddingVertical:28.05,
+    paddingHorizontal:109,
+    margin:2,
+    borderWidth:2,
+    borderColor:'black',
+  },
   fontsize: {
     fontSize: 20,
   },

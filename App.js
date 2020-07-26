@@ -13,47 +13,43 @@ export default function App() {
   const [display, setDisplay] = useState('')
   const [preview, setPreview] = useState('')
   const [operation, setOperation] = useState('')
+  var op;
+  const [history, setHistory] = useState([])
 
 
-  /*
-  e  -> &&
-  ou -> ||
-
-  a=2, a=3, a=1
-
-  if(a==1 && a==2){         
-    alert('imposible')
-  }else{
-    alert('posible')
-  }
-
-  if(a==1 || a==3){        f | v = 
-    alert(o)
-  }else{
-    alert(x)
-  }
-  */
-
-
-  useEffect(() => {
-
-  }, [display, preview, operation]);
   /*  3 casos problemáticos
   #1 - quando inicia o programa e clica em algum botao de calculo a operação sobe
   #2 - quanto o display é vazio e clica em algum botao de calculo a operação é executada - resolvido
-  #3 - não lembro
+  #3 - apertar o igual e dar erro, sem nada no display e preview
+  #4 - preview vazia e display com valor
   */
   function handleCalculation(buttonOperation) {
-
-    if (display == '' && preview != '') {
+    setHistory(history+[display + ' ' +  buttonOperation + ' '])
+    if (display == '' && preview != '') {//caso 2
       setOperation(buttonOperation)
-
-    } else if (display == '' && preview == '') {
+      op = buttonOperation
+ 
+    } else if (display == '' && preview == '') {//caso 1
       alert('Digite algum número')
+    } else if (display != '' && preview == '') {
+      setOperation(buttonOperation)
+      op = buttonOperation
+      setPreview(display.toString())
+      setDisplay('')
     } else {
-      setOperation ()
-      setPreview (calculation())
+      op = buttonOperation
+      setOperation(buttonOperation)
+      setPreview(calculation().toString())
+      setDisplay('')
     }
+
+  }
+
+  function handleEqual() {
+    op = operation;
+    setDisplay(calculation().toString())
+    setPreview('')
+    setOperation('')
   }
 
   function handlePercentage() {
@@ -73,7 +69,7 @@ export default function App() {
         <TextInput
           className='first-input'
           value={display}
-          onChange={e => setDisplay(e.target.value)}
+          onChangeText={(e) => setDisplay(e)}
           style={styles.displayFont}
           placeholderTextColor="#000" />
 
@@ -106,7 +102,7 @@ export default function App() {
           </View>
         </TouchableHighlight>
 
-        <TouchableHighlight onPress={() => { handleCalculation('X') }}>
+        <TouchableHighlight onPress={() => { handleCalculation('*') }}>
           <View style={styles.button} >
             <Text style={styles.fontsize}>X</Text>
           </View>
@@ -209,14 +205,18 @@ export default function App() {
           </View>
         </TouchableHighlight>
 
-        <TouchableHighlight onPress={() => { equal() }}>
+        <TouchableHighlight onPress={() => { handleEqual() }}>
           <View style={styles.buttonEquals} >
             <Text style={styles.fontsize}>=</Text>
           </View>
         </TouchableHighlight>
 
       </View>
-
+      <TouchableHighlight onPress={() => {alert(history)}}>
+          <View style={styles.history} >
+            <Text style={styles.fontsize}>History</Text>
+          </View>
+        </TouchableHighlight>
     </View>
   );
   function eraseEverything() {
@@ -224,6 +224,7 @@ export default function App() {
     setDisplay('')
     setOperation('')
     setPreview('')
+    setHistory('')
   }
   function eraseOperationPreview() {
 
@@ -232,7 +233,7 @@ export default function App() {
   }
   function calculation() {
     var value
-    switch (operation) {
+    switch (op) {
       case '+':
         value = parseFloat(preview) + parseFloat(display)
         break
@@ -246,12 +247,13 @@ export default function App() {
         value = parseFloat(preview) / parseFloat(display)
         break
       default:
-        alert("Invalid Operation")
-        value = -1
+        alert(op)
+        alert('invalido')
+        value = ('')
         break
     }
     return value
-
+    
   }
 }
 const onPress = () => Vibration.vibrate(50)
